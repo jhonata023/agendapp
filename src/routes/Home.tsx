@@ -1,11 +1,29 @@
 import { Conteudo } from "../components/Conteudo";
 import { Navbar } from "../components/Navbar"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Edit, Trash2, Pause } from "lucide-react";
+
+interface IServicesProps {
+    id: number, 
+    name: string, 
+    price: number, 
+    duration: number, 
+    enterprise: number, 
+    professionals: []
+}
+interface IProfessionals {
+    id: number, 
+    name: string,
+}
 
 export const Home = () => {
     const [optionSelected, setOptionSelected] = useState('option1');
     const handleOptionChange = (e: any) => setOptionSelected(e.target.value);
+    let [services, setServices] = useState<IServicesProps[]>([]);
+    let [professionals, setProfessionals] = useState<IProfessionals[]>([]);
+
+    useEffect(() => {fetch('http://localhost:8080/services').then(response => response.json()).then(res => {setServices(res)})},[]);
+    useEffect(() => {fetch('http://localhost:8080/professionals').then(response => response.json()).then(res => {setProfessionals(res)})},[]);
     return (
         <>
             <Navbar/>
@@ -32,20 +50,23 @@ export const Home = () => {
                         <div className="border rounded p-md-4 p-sm-2 shadow">
                             <h3 className="mt-3 text-center">Serviços da Empresa</h3>
 
-                            <div className="border rounded p-2 mt-3 d-flex justify-content-between">
-                                <div>
-                                    <h5>Corte de Cabelo</h5>
-                                    <div className="d-flex justify-content-around">
-                                        <p className="m-0">R$ 35,00</p>
-                                        <p className="text-muted m-0">30 min</p>
+                            {services.map(service => (
+                                <div key={service.id} className="border rounded p-2 mt-3 d-flex justify-content-between">
+                                    <div>
+                                        <h5>{service.name}</h5>
+                                        <div className="d-flex justify-content-around">
+                                            <p className="m-0">R$ {service.price}</p>
+                                            <p className="text-muted m-0">{service.duration} min</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button className="btn btn-light"><Edit size={16} /></button>
+                                        <button className="btn btn-light m-2"><Pause size={16} /></button>
+                                        <button className="btn btn-danger"><Trash2 size={16} /></button>
                                     </div>
                                 </div>
-                                <div>
-                                    <button className="btn btn-light"><Edit size={16} /></button>
-                                    <button className="btn btn-light m-2"><Pause size={16} /></button>
-                                    <button className="btn btn-danger"><Trash2 size={16} /></button>
-                                </div>
-                            </div>
+                            ))}
+                            
 
                             <div className="p-3 mt-4 rounded border row" style={{backgroundColor: '#dae0e5'}}>
                                 <div className="col-12 col-sm-6 col-md-3 m-1 m-sm-0">
@@ -142,14 +163,12 @@ export const Home = () => {
                             <h3 className="text-center mt-3">Equipe de Profissionais</h3>
 
                             <div className="mt-4">
-                                <div className="border rounded p-3 m-2 d-flex justify-content-between align-items-center">
-                                    <h6>João - Barbeiro</h6>
-                                    <button className="btn btn-light">Editar</button>
-                                </div>
-                                <div className="border rounded p-3 m-2 d-flex justify-content-between align-items-center">
-                                    <h6>João - Barbeiro</h6>
-                                    <button className="btn btn-light">Editar</button>
-                                </div>
+                                {professionals.map(professional => (
+                                    <div className="border rounded p-3 m-2 d-flex justify-content-between align-items-center">
+                                        <h6>{professional.name}</h6>
+                                        <button className="btn btn-light">Editar</button>
+                                    </div>
+                                ))}
                             </div>
 
                             <button className="btn btn-primary m-3">Adicionar Profissional</button>

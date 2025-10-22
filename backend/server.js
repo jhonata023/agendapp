@@ -53,7 +53,15 @@ let bd = [
     rating: 2.8
   },
 ]
-
+let bdServices = [
+  {id:1, name: 'Cortar Cabelo', price: 25, duration: 45, enterprise: 1, professionals: [1, 2]},
+  {id:2, name: 'Aparar a Barba', price: 20, duration: 20, enterprise: 1, professionals: [1, 2]},
+  {id:3, name: 'Pigmentação', price: 40, duration: 60, enterprise: 1, professionals: [1]},
+]
+let bdProfessionals = [
+  {id: 1, name: 'João Silva', rating: 3.9}, 
+  {id: 2, name: 'Pedro Ramos', rating: 4.7}
+]
 let bdAgendamentos = [
     {   id: 1,
         enterprise: 'Barbearia Estilo',
@@ -95,16 +103,22 @@ let bdAgendamentos = [
 
 //Routes
     app.get('/', (req, res) => {
-        res.send({msg: 'Hello World'})
+      res.send({msg: 'Hello World'})
     })
     app.post('/login', (req, res) => {
-        console.log(req.body);
+      console.log(req.body);
     })
     app.get('/empresas', (req, res) => {
-        res.json(bd)
+      res.json(bd)
     })
     app.get('/agendamentos', (req, res) => {
-        res.json(bdAgendamentos)
+      res.json(bdAgendamentos)
+    })
+    app.get('/services', (req, res) => {
+      res.json(bdServices)
+    })
+    app.get('/professionals', (req, res) => {
+      res.json(bdProfessionals)
     })
 
 app.listen(PORT, () => {console.log('Servidor rodando na porta ' + PORT)});
