@@ -33,6 +33,7 @@ export const Navbar = () => {
           >
             {/* Lista de Navegação */}
             <ul className="navbar-nav me-auto me-md-0 mb-2 mb-md-0">
+              <li className="nav-item"><Link to={'/home'} className="nav-link text-dark">Home</Link></li>
               <li className="nav-item"><Link to={'/empresas'} className="nav-link text-dark">Empresas</Link></li>
               <li className="nav-item"><Link to={'/agendamentos'} className="nav-link text-dark">Meus Agendamentos</Link></li>
               <li className="nav-item"><Link to={'/relatorio'} className="nav-link text-dark">Relatórios</Link></li>

@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client'
 import {App} from './App.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Relatorios } from './routes/Relatorios.tsx'
+import { Home } from './routes/Home.tsx'
 
 
 const router = createBrowserRouter([
@@ -32,6 +33,9 @@ const router = createBrowserRouter([
   },
   { path: "/agendamentos",
     element: <Agendamentos />,
+  },
+  { path: "/home",
+    element: <Home/>,
   },
   { path: "/relatorio",
     element: <Relatorios />,
