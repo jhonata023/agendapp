@@ -12,7 +12,6 @@ interface IEmpresasProps {
   srcImg: string,
   rating: number,
   description: string,
-  services: []
 }
 export const Empresas = () => {
   let [empresas, setEmpresas] = useState<IEmpresasProps[]>([]);

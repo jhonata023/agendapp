@@ -63,12 +63,12 @@ export const Relatorios = () => {
                 else if (shortMonth === 'dez') months[11] += 1;  
             })
             
-            const teste2 = months.map((amount, index) => {
+            const monsthsData = months.map((amount, index) => {
                 if (amount > 0) return {month: nameMonth[index], amount}
                 return null
             }).filter (item => item !== null);
 
-            setDadosMensais(teste2)
+            setDadosMensais(monsthsData)
         }
     }, [agendamentos?.schedulings])
     

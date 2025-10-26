@@ -22,8 +22,29 @@ export const Home = () => {
     let [services, setServices] = useState<IServicesProps[]>([]);
     let [professionals, setProfessionals] = useState<IProfessionals[]>([]);
 
-    useEffect(() => {fetch('http://localhost:8080/services').then(response => response.json()).then(res => {setServices(res)})},[]);
-    useEffect(() => {fetch('http://localhost:8080/professionals').then(response => response.json()).then(res => {setProfessionals(res)})},[]);
+    useEffect(() => {
+        fetch('http://localhost:8080/services', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({enterpriseId: 1})
+        })
+            .then(response => response.json())
+            .then(res => {setServices(res)})
+    },[]);
+    useEffect(() => {
+        fetch('http://localhost:8080/professionals', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({enterpriseId: 1})
+        })
+            .then(response => response.json())
+            .then(res => {setProfessionals(res)})
+    },[]);
+    
     return (
         <>
             <Navbar/>
@@ -164,7 +185,7 @@ export const Home = () => {
 
                             <div className="mt-4">
                                 {professionals.map(professional => (
-                                    <div className="border rounded p-3 m-2 d-flex justify-content-between align-items-center">
+                                    <div key={professional.id} className="border rounded p-3 m-2 d-flex justify-content-between align-items-center">
                                         <h6>{professional.name}</h6>
                                         <button className="btn btn-light">Editar</button>
                                     </div>

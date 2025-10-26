@@ -6,24 +6,13 @@ const PORT = 8080;
 
 let bd = [
   {id: 1,
+    email: 'barbearia',
+    password: 'abcd',
     title: "Barbearia Soares",
     address: "Rua das Palmeiras, 123 - São Paulo",
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDmSvj8oN34pW_UAGFBD0HSDwFYWbRSzX6-g&s",
     rating: 3.8,
     description: "Tradição e modernidade se encontram na Barbearia Soares. Especialistas no corte perfeito.",
-    services: [
-      {id:101, name: 'Cortar Cabelo', price: 25, duration: 45, professionals: [
-        {id: 1, name: 'João Silva', rating: 4.6}, 
-        {id: 2, name: 'Pedro Ramos', rating: 4.1}
-      ]},
-      {id:102, name: 'Aparar a Barba', price: 20, duration: 20, professionals: [
-        {id: 1, name: 'João Silva', rating: 3.9}, 
-        {id: 2, name: 'Pedro Ramos', rating: 4.7}
-      ]},
-      {id:301, name: 'Pigmentação', price: 40, duration: 60, professionals: [
-        {id: 1, name: 'João Silva', rating: 4.8}
-      ]},
-    ]
   },
   {id: 2,
     title: "Clínica Bem-Estar",
@@ -109,7 +98,12 @@ let bdAgendamentos = [
       res.send({msg: 'Hello World'})
     })
     app.post('/login', (req, res) => {
-      console.log(req.body);
+      const user = bd.find(enterprise => enterprise.email === req.body.email);
+      if (user) {
+        if (user.password == req.body.password) {return res.json({redirectTo: 'http://localhost:5173/relatorio'})}
+        return res.json({msg: 'Senha incorreta'})
+      }
+      return res.json({msg: 'Usuário não encontrado'})
     })
     app.get('/empresas', (req, res) => {
       res.json(bd)
@@ -134,11 +128,13 @@ let bdAgendamentos = [
       const data = bdAgendamentos.filter(item => item.enterpriseId === req.body.enterpriseId)
       res.json(data);
     })
-    app.get('/services', (req, res) => {
-      res.json(bdServices)
+    app.post('/services', (req, res) => {
+      const data = bdServices.filter(item => item.enterpriseId === req.body.enterpriseId)
+      res.json(data)
     })
-    app.get('/professionals', (req, res) => {
-      res.json(bdProfessionals)
+    app.post('/professionals', (req, res) => {
+      const data = bdProfessionals.filter(item => item.enterpriseId === req.body.enterpriseId)
+      res.json(data)
     })
 
 app.listen(PORT, () => {console.log('Servidor rodando na porta ' + PORT)});

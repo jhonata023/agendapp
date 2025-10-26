@@ -9,6 +9,14 @@ const sendLogin = (email: string, password: string) => {
         },
         body: JSON.stringify({email: email, password: password})
     })
+        .then(response => response.json())
+        .then(res => {
+            if (res.redirectTo) {
+                window.localStorage.setItem('token', 'asd')
+                window.location.href = res.redirectTo;
+            }
+            console.log(res);
+        })
 }
 
 export const Login = () => {
