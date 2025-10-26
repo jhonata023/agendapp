@@ -8,26 +8,13 @@ import { ServiceModal } from "../components/ServiceModal";
 
 import { useState, useEffect } from "react";
 
-interface IProfessional {
+interface IService {
   id: number,
   name: string,
-  rating: number;
-}
-
-interface IService {
-  id: number;
-  name: string,
-  price: number,
-  duration: number,
-  professionals: IProfessional[]
-}
-
-interface IService {
-  id: number, 
-  name: string, 
   price: number, 
-  duration: number, 
-  professionals: IProfessional[]
+  duration: number,
+  enterpriseId: number,
+  professionals: number[]
 }
 
 interface IEmpresasProps {
@@ -46,10 +33,21 @@ export const MinhaEmpresa = () => {
     const [selectedService, setSelectedService] = useState<IService | null>(null);
     const [currentBusinessTitle, setCurrentBusinessTitle] = useState('');
     const [empresas, setEmpresas] = useState<IEmpresasProps[]>([]);
+    const [servicesToRender, setServicesToRender] = useState<IService[]>([])
 
     useEffect(()=> {
       fetch('http://localhost:8080/empresas').then(response => response.json()).then(res => setEmpresas(res))
     }, []);
+    useEffect(() => {
+      fetch('http://localhost:8080/services', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({enterpriseId: 1})
+      })
+        .then(response => response.json()).then(res => setServicesToRender(res))
+    }, [])
 
     const openServiceModal = (service: IService, businessTitle: string) => {
         setSelectedService(service);
@@ -70,7 +68,6 @@ export const MinhaEmpresa = () => {
       return <h3 className="text-center p-5 text-danger">Empresa não encontrada!</h3>;
     }
 
-    const servicesToRender = currentBusiness.services || [];
     return (
         <>
             <div className="d-flex flex-column min-vh-100">

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { url } = require('inspector');
 
 const app = express();
 const PORT = 8080;
@@ -8,6 +9,7 @@ let bd = [
   {id: 1,
     email: 'barbearia',
     password: 'abcd',
+    type: 'empresa',
     title: "Barbearia Soares",
     address: "Rua das Palmeiras, 123 - São Paulo",
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDmSvj8oN34pW_UAGFBD0HSDwFYWbRSzX6-g&s",
@@ -15,6 +17,7 @@ let bd = [
     description: "Tradição e modernidade se encontram na Barbearia Soares. Especialistas no corte perfeito.",
   },
   {id: 2,
+    type: 'empresa',
     title: "Clínica Bem-Estar",
     address: "Av. Paulista, 500 - São Paulo",
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjbHPLZDRkVLSXwYa7kdqcFKI6nUsPsC32ow&s",
@@ -22,6 +25,7 @@ let bd = [
     description: "Seu centro completo de saúde e bem-estar. Consultas médicas e terapias holísticas."
   },
   {id: 3,
+    type: 'empresa',
     title: "PetShop Amigo Fiel",
     address: "Rua dos Girassóis, 89 - Campinas",
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRl-Dp02BOx7xtcFcEk0p17iY2BJsMgFZA46A&s",
@@ -29,6 +33,7 @@ let bd = [
     description: "Tosa, banho e muito carinho para seu melhor amigo.",
   },
   {id: 4,
+    type: 'empresa',
     title: "Estética & Spa Beleza Pura",
     address: "Alameda Santos, 230 - São Paulo",
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4drA4oWsDDWaJcGyOeBNgSsxqbjfFScnysg&s",
@@ -36,6 +41,7 @@ let bd = [
     description: "Momentos de relaxamento e cuidado pessoal.",
   },
   {id: 5,
+    type: 'empresa',
     title: "Personal Robson",
     address: "Prado - Belo Horizonte",
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD1saFwWn59Bpckvw0AY9DgudbPPSlsg2psQ&s",
@@ -86,6 +92,24 @@ let bdAgendamentos = [
         duration: 60
     },
 ]
+let availableSlots = [
+  { time: "09:00", profId: 1, date: '11-01-2025', enterpriseId: 1},
+  { time: "10:30", profId: 2, date: '11-01-2025', enterpriseId: 1},
+  { time: "14:00", profId: 1, date: '11-01-2025', enterpriseId: 1},
+  { time: "16:00", profId: 2, date: '11-01-2025', enterpriseId: 1},
+  { time: "16:00", profId: 1, date: '11-01-2025', enterpriseId: 1},
+];
+
+const navAcess = {
+  cliente: [{title: 'Empresas', url: '/empresas'}, {title: 'Agendamentos', url: '/agendamentos'}],
+  empresa: [
+    {title: 'Home', url: '/home'},
+    {title: 'Relatórios', url: '/relatorio'},
+    {title: 'Empresas', url: '/empresas'},
+    {title: 'Agendamentos', url: '/agendamentos'}
+  ],
+  null: [{title: 'Empresas', url: '/empresas'}]
+}
 
 //Config
     app.use(express.json());
@@ -100,7 +124,7 @@ let bdAgendamentos = [
     app.post('/login', (req, res) => {
       const user = bd.find(enterprise => enterprise.email === req.body.email);
       if (user) {
-        if (user.password == req.body.password) {return res.json({redirectTo: 'http://localhost:5173/relatorio'})}
+        if (user.password == req.body.password) {return res.json({redirectTo: 'http://localhost:5173/relatorio', type: user.type})}
         return res.json({msg: 'Senha incorreta'})
       }
       return res.json({msg: 'Usuário não encontrado'})
@@ -135,6 +159,16 @@ let bdAgendamentos = [
     app.post('/professionals', (req, res) => {
       const data = bdProfessionals.filter(item => item.enterpriseId === req.body.enterpriseId)
       res.json(data)
+    })
+    app.post('/nav', (req, res) => {
+      const verify = req.body.access
+
+      if (verify === 'empresa') return res.json(navAcess.empresa)
+      else if (verify === 'cliente') return res.json(navAcess.cliente);
+      return res.json(navAcess.null)
+    })
+    app.post('/availableSlots', (req, res) => {
+      res.json(availableSlots)
     })
 
 app.listen(PORT, () => {console.log('Servidor rodando na porta ' + PORT)});

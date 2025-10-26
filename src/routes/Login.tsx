@@ -12,7 +12,7 @@ const sendLogin = (email: string, password: string) => {
         .then(response => response.json())
         .then(res => {
             if (res.redirectTo) {
-                window.localStorage.setItem('token', 'asd')
+                window.localStorage.setItem('token', res.type)
                 window.location.href = res.redirectTo;
             }
             console.log(res);

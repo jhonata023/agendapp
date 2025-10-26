@@ -48,19 +48,21 @@ export const Relatorios = () => {
             const nameMonth = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
             agendamentos.schedulings.forEach(agend => {
                 const shortMonth = new Date(agend).toLocaleString('pt-BR', {month: 'short'}).slice(0,3);
+
+                nameMonth.forEach((month, i) => {if (month === shortMonth) months[i] += 1;})
     
-                if (shortMonth === 'jan') months[0] += 1;
-                else if (shortMonth === 'fev') months[1] += 1;
-                else if (shortMonth === 'mar') months[2] += 1;
-                else if (shortMonth === 'abr') months[3] += 1;
-                else if (shortMonth === 'mai') months[4] += 1;
-                else if (shortMonth === 'jun') months[5] += 1;
-                else if (shortMonth === 'jul') months[6] += 1;
-                else if (shortMonth === 'ago') months[7] += 1;
-                else if (shortMonth === 'set') months[8] += 1;
-                else if (shortMonth === 'out') months[9] += 1;
-                else if (shortMonth === 'nov') months[10] += 1;
-                else if (shortMonth === 'dez') months[11] += 1;  
+                // if (shortMonth === 'jan') months[0] += 1;
+                // else if (shortMonth === 'fev') months[1] += 1;
+                // else if (shortMonth === 'mar') months[2] += 1;
+                // else if (shortMonth === 'abr') months[3] += 1;
+                // else if (shortMonth === 'mai') months[4] += 1;
+                // else if (shortMonth === 'jun') months[5] += 1;
+                // else if (shortMonth === 'jul') months[6] += 1;
+                // else if (shortMonth === 'ago') months[7] += 1;
+                // else if (shortMonth === 'set') months[8] += 1;
+                // else if (shortMonth === 'out') months[9] += 1;
+                // else if (shortMonth === 'nov') months[10] += 1;
+                // else if (shortMonth === 'dez') months[11] += 1;  
             })
             
             const monsthsData = months.map((amount, index) => {

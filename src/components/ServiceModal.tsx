@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
+
 interface IProfessional {
   id: number,
   name: string,
+  enterpriseId: number,
   rating: number;
 }
 
@@ -9,13 +12,21 @@ interface IService {
   name: string,
   price: number,
   duration: number,
-  professionals: IProfessional[]
+  enterpriseId: number,
+  professionals: number[]
 }
 
 interface IModalProps {
     businessTitle: string;
     service: IService;
     onClose: () => void;
+}
+
+interface IAvailableSlots {
+  time: string,
+  profId: number,
+  date: string,
+  enterpriseId: number
 }
 
 const renderStars = (rating: number) => {
@@ -40,21 +51,36 @@ const renderStars = (rating: number) => {
 
 export const ServiceModal = (props: IModalProps) => {
   const { businessTitle, service, onClose } = props;
-
-  // Simulação de dados de agenda (Slots fixos para demonstração)
-  const availableSlots = [
-    { time: "09:00", profId: service.professionals[0]?.id },
-    { time: "10:30", profId: service.professionals[1]?.id || service.professionals[0]?.id },
-    { time: "14:00", profId: service.professionals[0]?.id },
-    { time: "16:00", profId: service.professionals[1]?.id || service.professionals[0]?.id },
-  ];
-
-  // Simulação de clique de agendamento (USANDO console.log em vez de alert)
+  const [professionals, setProfessionals] = useState<IProfessional[]>([])
+  const [availableSlots, setAvailableSlots] = useState<IAvailableSlots[]>([])
+  
+  // Simulação de clique de agendamento
   const handleSchedule = (time: string, profName: string) => {
     console.log(`Agendado: ${service.name} com ${profName} às ${time} em ${businessTitle}.`);
     alert(`Agendado com sucesso!\nServiço: ${service.name}\nProfissional: ${profName}\nHorário: ${time}`);
     onClose();
   };
+
+  useEffect(() => {
+    fetch('http://localhost:8080/professionals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify({enterpriseId: 1})
+    })
+      .then(response => response.json())
+      .then(res => setProfessionals(res));
+  }, [])
+  useEffect(() => {
+    fetch('http://localhost:8080/availableSlots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify({enterpriseId: 1})
+    })
+      .then(response => response.json())
+      .then(res => setAvailableSlots(res));
+  }, [])
 
   return (
     <div 
@@ -90,24 +116,29 @@ export const ServiceModal = (props: IModalProps) => {
             {/* Profissionais */}
             <h6 className="fw-bold text-dark mb-3">Profissionais que Realizam este Serviço ({service.professionals.length})</h6>
             <div className="row g-2 mb-4">
-              {service.professionals.map(prof => (
-                <div key={prof.id} className="col-6">
-                  <div className="border p-2 rounded-3 d-flex align-items-center bg-light">
-                    <i className="bi bi-person-circle fs-5 me-2 text-secondary"></i>
-                    <div className="small">
-                      <p className="m-0 fw-bold">{prof.name}</p>
-                      <div className="text-warning small">{renderStars(prof.rating)}</div>
+              {service.professionals.map(profId => {
+                const prof = professionals.find(professional => professional.id === profId)
+                if (!prof) return null
+
+                return (
+                  <div key={profId} className="col-6">
+                    <div className="border p-2 rounded-3 d-flex align-items-center bg-light">
+                      <i className="bi bi-person-circle fs-5 me-2 text-secondary"></i>
+                      <div className="small">
+                        <p className="m-0 fw-bold">{prof.name}</p>
+                        <div className="text-warning small">{renderStars(prof.rating)}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+            })}
             </div>
 
             {/* Agenda e Horários */}
             <h6 className="fw-bold text-dark mb-3">Horários Disponíveis Hoje</h6>
             <div className="d-flex flex-wrap gap-2 mb-3">
               {availableSlots.map((slot, index) => {
-                const prof = service.professionals.find(p => p.id === slot.profId);
+                const prof = professionals.find(professional => professional.id === slot.profId);
                 if (!prof) return null;
 
                 return (
@@ -117,7 +148,7 @@ export const ServiceModal = (props: IModalProps) => {
                     onClick={() => handleSchedule(slot.time, prof.name)}
                     title={`Agendar com ${prof.name}`}
                   >
-                    {slot.time}
+                    {slot.time + " " + prof.name}
                   </button>
                 );
               })}

@@ -15,7 +15,7 @@ export function App() {
               <p className="text-muted" style={{maxWidth: '500px'}}>O <b className="text-primary">AgendApp</b> é a solução completa para gerenciar seus agendamentos com praticidade, profissionalismo e sem complicações</p>
             </div>
 
-            <Link to={'/auth/register'}><button className="btn btn-primary mt-3 mb-5">Comece Agora</button></Link>
+            <Link to={'/relatorio'}><button className="btn btn-primary mt-3 mb-5">Comece Agora</button></Link>
           </div>
 
           <div className="mt-4 p-4">

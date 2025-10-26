@@ -1,9 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { User } from "lucide-react";
+
+interface ILinks {
+  title: string,
+  url: string
+}
 
 export const Navbar = () => {
   // Estado para controlar a abertura/fechamento do menu Hamburger
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [links, setLinks] = useState<ILinks[]>([]);
+  const login = window.localStorage.getItem('token');
+
+  useEffect(() => {
+    fetch('http://localhost:8080/nav', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({access: login})
+    })
+      .then(response => response.json())
+      .then(res => setLinks(res))
+  },[])
 
   return(
     <header>
@@ -33,14 +53,22 @@ export const Navbar = () => {
           >
             {/* Lista de Navegação */}
             <ul className="navbar-nav me-auto me-md-0 mb-2 mb-md-0">
-              <li className="nav-item"><Link to={'/home'} className="nav-link text-dark">Home</Link></li>
-              <li className="nav-item"><Link to={'/empresas'} className="nav-link text-dark">Empresas</Link></li>
+              {links.map((link, index) => (
+                <li key={index} className="nav-item"><Link to={link.url} className="nav-link text-dark">{link.title}</Link></li>
+              ))}
+              {/* <li className="nav-item"><Link to={'/empresas'} className="nav-link text-dark">Empresas</Link></li>
               <li className="nav-item"><Link to={'/agendamentos'} className="nav-link text-dark">Meus Agendamentos</Link></li>
-              <li className="nav-item"><Link to={'/relatorio'} className="nav-link text-dark">Relatórios</Link></li>
+              <li className="nav-item"><Link to={'/relatorio'} className="nav-link text-dark">Relatórios</Link></li> */}
             </ul>
 
             {/* Botão Entrar - Movido para dentro do colapsável para alinhamento em mobile */}
-            <Link to={'/auth/login'}><button className="btn btn-primary mt-2 mt-md-0">Entrar</button></Link>
+            {!login && (
+              <Link to={'/auth/login'}><button className="btn btn-primary mt-2 mt-md-0">Entrar</button></Link>
+            )}
+            {login && (
+              <button className="btn btn-primary mt-2 ml-5 mt-md-0" onClick={() => {localStorage.removeItem('token'); window.location.reload()}}><User size={20}/></button>
+            )}
+            
           </div>
         </div>
       </nav>

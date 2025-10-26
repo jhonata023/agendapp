@@ -1,17 +1,12 @@
 import { Link } from "react-router-dom";
 
-interface IProfessional {
-  id: number,
-  name: string,
-  rating: number;
-}
-
 interface IService {
   id: number;
   name: string,
   price: number,
   duration: number,
-  professionals: IProfessional[]
+  enterpriseId: number,
+  professionals: number[]
 }
 
 interface ICardsProps {
