@@ -54,40 +54,43 @@ let bd = [
   },
 ]
 let bdServices = [
-  {id:1, name: 'Cortar Cabelo', price: 25, duration: 45, enterprise: 1, professionals: [1, 2]},
-  {id:2, name: 'Aparar a Barba', price: 20, duration: 20, enterprise: 1, professionals: [1, 2]},
-  {id:3, name: 'Pigmentação', price: 40, duration: 60, enterprise: 1, professionals: [1]},
+  {id:1, name: 'Cortar Cabelo', price: 25, duration: 45, enterpriseId: 1, professionals: [1, 2]},
+  {id:2, name: 'Aparar a Barba', price: 20, duration: 20, enterpriseId: 1, professionals: [1, 2]},
+  {id:3, name: 'Pigmentação', price: 40, duration: 60, enterpriseId: 1, professionals: [1]},
 ]
 let bdProfessionals = [
-  {id: 1, name: 'João Silva', rating: 3.9}, 
-  {id: 2, name: 'Pedro Ramos', rating: 4.7}
+  {id: 1, name: 'João Silva', rating: 3.9, enterpriseId: 1}, 
+  {id: 2, name: 'Pedro Ramos', rating: 4.7, enterpriseId: 1}
 ]
 let bdAgendamentos = [
     {   id: 1,
+        enterpriseId: 1,
         enterprise: 'Barbearia Estilo',
         service: 'Corte de cabelo',
         professional: 'João Silva',
-        date: '17/10/2025',
+        date: "10-17-2025",
         time: '14:00',
         status: 'Confirmado',
         price: 25.00,
         duration: 45
     },
     {   id: 2,
+        enterpriseId: 3,
         enterprise: 'PetShop Amigo Fiel',
         service: 'Banho e Tosa',
         professional: 'Felipe Souza',
-        date: '21/10/2025',
+        date: "10-21-2025",
         time: '11:00',
         status: 'Cancelado',
         price: 65.00,
         duration: 150
     },
     {   id: 3,
+        enterpriseId: 2,
         enterprise: 'Clínica Bem-Estar',
         service: 'Massagem Relaxante',
         professional: 'Maria Oliveira',
-        date: '19/10/2025',
+        date: "11-19-2025",
         time: '09:30',
         status: 'Pendente',
         price: 80.00,
@@ -111,8 +114,25 @@ let bdAgendamentos = [
     app.get('/empresas', (req, res) => {
       res.json(bd)
     })
-    app.get('/agendamentos', (req, res) => {
-      res.json(bdAgendamentos)
+    app.post('/relatorios', (req, res) => {
+      const bdAgendNovo = bdAgendamentos.filter(item => item.enterpriseId === req.body.enterpriseId);
+      const bdProfNovo = bdProfessionals.filter(item => item.enterpriseId === req.body.enterpriseId);
+      const bdServicesNovo = bdServices.filter(item => item.enterpriseId === req.body.enterpriseId);
+
+      let returnSchedulings = bdAgendNovo.map(resp => resp.date);
+      let canceleds = bdAgendNovo.map(resp => resp.status).filter(item => item === 'Cancelado')
+
+      let reportsPage = {
+        schedulings: returnSchedulings,
+        professionals: bdProfNovo.length,
+        services: bdServicesNovo,
+        canceleds: canceleds.length
+      }
+      res.json(reportsPage)
+    })
+    app.post('/agendamentos', (req, res) => {
+      const data = bdAgendamentos.filter(item => item.enterpriseId === req.body.enterpriseId)
+      res.json(data);
     })
     app.get('/services', (req, res) => {
       res.json(bdServices)

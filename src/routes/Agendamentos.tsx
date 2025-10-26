@@ -29,7 +29,17 @@ export const Agendamentos = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [agendamentos, setAgendamentos] = useState<IAgendamentosProps[]>([]);
 
-    useEffect(() => {fetch('http://localhost:8080/agendamentos').then(response => response.json()).then(res => setAgendamentos(res))},[]);
+    useEffect(() => {
+        fetch('http://localhost:8080/agendamentos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({enterpriseId: 1})
+        })
+            .then(response => response.json())
+            .then(res => setAgendamentos(res))
+        },[]);
     
 
     const onClose = () => {
