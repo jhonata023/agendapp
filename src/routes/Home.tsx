@@ -68,8 +68,10 @@ export const Home = () => {
             body: JSON.stringify({enterpriseId: 1})
         })
             .then(response => response.json())
-            .then(res => {setEnterprise(res); console.log(res)})
+            .then(res => {setEnterprise(res)})
     },[]);
+
+    console.log(document.cookie.split(';'))
     
     return (
         <>

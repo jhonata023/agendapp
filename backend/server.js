@@ -134,6 +134,9 @@ const navAcess = {
       }
       return res.json({msg: 'Usuário não encontrado'})
     })
+    app.get('/enterprise-page', (req, res) => {
+      res.json(bd)
+    })
     app.post('/empresas', (req, res) => {
       const enterprises = bd.filter(newEnterprises => newEnterprises.city === req.body.city)
       res.json(enterprises)
@@ -178,7 +181,6 @@ const navAcess = {
     })
     app.post('/profile', (req, res) => {
       const enterprise = bd.filter(business => business.id === req.body.enterpriseId);
-      console.log(enterprise)
       res.json(enterprise[0]);
     })
 

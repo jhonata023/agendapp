@@ -36,7 +36,7 @@ export const MinhaEmpresa = () => {
     const [servicesToRender, setServicesToRender] = useState<IService[]>([])
 
     useEffect(()=> {
-      fetch('http://localhost:8080/empresas').then(response => response.json()).then(res => setEmpresas(res))
+      fetch('http://localhost:8080/enterprise-page').then(response => response.json()).then(res => setEmpresas(res))
     }, []);
     useEffect(() => {
       fetch('http://localhost:8080/services', {
