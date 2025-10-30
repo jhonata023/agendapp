@@ -12,6 +12,7 @@ let bd = [
     type: 'empresa',
     title: "Barbearia Soares",
     address: "Rua das Palmeiras, 123 - São Paulo",
+    city: 'São Paulo',
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDmSvj8oN34pW_UAGFBD0HSDwFYWbRSzX6-g&s",
     rating: 3.8,
     description: "Tradição e modernidade se encontram na Barbearia Soares. Especialistas no corte perfeito.",
@@ -20,6 +21,7 @@ let bd = [
     type: 'empresa',
     title: "Clínica Bem-Estar",
     address: "Av. Paulista, 500 - São Paulo",
+    city: 'São Paulo',
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjbHPLZDRkVLSXwYa7kdqcFKI6nUsPsC32ow&s",
     rating: 4.8,
     description: "Seu centro completo de saúde e bem-estar. Consultas médicas e terapias holísticas."
@@ -28,6 +30,7 @@ let bd = [
     type: 'empresa',
     title: "PetShop Amigo Fiel",
     address: "Rua dos Girassóis, 89 - Campinas",
+    city: 'Campinas',
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRl-Dp02BOx7xtcFcEk0p17iY2BJsMgFZA46A&s",
     rating: 3.5,
     description: "Tosa, banho e muito carinho para seu melhor amigo.",
@@ -36,6 +39,7 @@ let bd = [
     type: 'empresa',
     title: "Estética & Spa Beleza Pura",
     address: "Alameda Santos, 230 - São Paulo",
+    city: 'São Paulo',
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4drA4oWsDDWaJcGyOeBNgSsxqbjfFScnysg&s",
     rating: 4.2,
     description: "Momentos de relaxamento e cuidado pessoal.",
@@ -44,6 +48,7 @@ let bd = [
     type: 'empresa',
     title: "Personal Robson",
     address: "Prado - Belo Horizonte",
+    city: 'Belo Horizonte',
     srcImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD1saFwWn59Bpckvw0AY9DgudbPPSlsg2psQ&s",
     rating: 2.8
   },
@@ -129,8 +134,9 @@ const navAcess = {
       }
       return res.json({msg: 'Usuário não encontrado'})
     })
-    app.get('/empresas', (req, res) => {
-      res.json(bd)
+    app.post('/empresas', (req, res) => {
+      const enterprises = bd.filter(newEnterprises => newEnterprises.city === req.body.city)
+      res.json(enterprises)
     })
     app.post('/relatorios', (req, res) => {
       const bdAgendNovo = bdAgendamentos.filter(item => item.enterpriseId === req.body.enterpriseId);
@@ -169,6 +175,11 @@ const navAcess = {
     })
     app.post('/availableSlots', (req, res) => {
       res.json(availableSlots)
+    })
+    app.post('/profile', (req, res) => {
+      const enterprise = bd.filter(business => business.id === req.body.enterpriseId);
+      console.log(enterprise)
+      res.json(enterprise[0]);
     })
 
 app.listen(PORT, () => {console.log('Servidor rodando na porta ' + PORT)});

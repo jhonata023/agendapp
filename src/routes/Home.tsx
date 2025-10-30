@@ -15,13 +15,28 @@ interface IProfessionals {
     id: number, 
     name: string,
 }
+interface IEnterprise {
+    title: string,
+    srcImg: string,
+    description: string,
+}
 
 export const Home = () => {
     const [optionSelected, setOptionSelected] = useState('option1');
-    const handleOptionChange = (e: any) => setOptionSelected(e.target.value);
+    const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => setOptionSelected(e.target.value);
     let [services, setServices] = useState<IServicesProps[]>([]);
     let [professionals, setProfessionals] = useState<IProfessionals[]>([]);
+    let [enterprise, setEnterprise] = useState<IEnterprise | undefined>(undefined);
 
+    const [title, setTitle] = useState(enterprise?.title);
+    const [srcImg, setSrcImg] = useState(enterprise?.srcImg);
+    const [description, setDescription] = useState(enterprise?.description);
+
+    useEffect(() => {
+        if (enterprise?.title) setTitle(enterprise.title)
+        if (enterprise?.srcImg) setSrcImg(enterprise.srcImg)
+        if (enterprise?.description) setDescription(enterprise.description)
+    }, [enterprise])
     useEffect(() => {
         fetch('http://localhost:8080/services', {
             method: 'POST',
@@ -43,6 +58,17 @@ export const Home = () => {
         })
             .then(response => response.json())
             .then(res => {setProfessionals(res)})
+    },[]);
+    useEffect(() => {
+        fetch('http://localhost:8080/profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({enterpriseId: 1})
+        })
+            .then(response => response.json())
+            .then(res => {setEnterprise(res); console.log(res)})
     },[]);
     
     return (
@@ -97,7 +123,7 @@ export const Home = () => {
                                     <input type="text" className="form-control" placeholder="Preço"/>
                                 </div>
                                 <div className="col-12 col-sm-6 col-md-3 m-1 m-sm-0">
-                                    <input type="text" className="form-control" placeholder="Duração"/>
+                                    <input type="text" className="form-control" placeholder="Duração - (min)"/>
                                 </div>
                                 <div className="col-12 col-sm-6 col-md-3 m-1 m-sm-0 text-center">
                                     <button className="btn btn-primary">Adicionar</button>
@@ -199,9 +225,17 @@ export const Home = () => {
                     {optionSelected === 'option4' && (
                         <div className="border rounded shadow p-3">
                             <h3 className="text-center mb-4">Perfil da Empresa</h3>
-                            <input type="text" name="" id="" className="form-control m-2" placeholder="Nome da Empresa"/>
-                            <input type="text" name="" id="" className="form-control m-2" placeholder="URL da imagem"/>
-                            <input type="text" name="" id="" className="form-control m-2" placeholder="Descrição da empresa"/>
+                            <div>
+                                <label htmlFor="title">Nome da empresa</label>
+                                <input type="text" name="title" id="" className="form-control m-2" placeholder="Nome da Empresa" 
+                                value={title} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setTitle(e.target.value)}}/>
+                                <label htmlFor="srcImg">URL da imagem</label>
+                                <input type="text" name="srcImg" id="" className="form-control m-2" placeholder="URL da imagem" 
+                                value={srcImg} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setSrcImg(e.target.value)}}/>
+                                <label htmlFor="description">Descrição</label>
+                                <input type="text" name="description" id="" className="form-control m-2" placeholder="Descrição da empresa" 
+                                value={description} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setDescription(e.target.value)}}/>
+                            </div>
                             <button className="btn btn-success">Salvar</button>
                         </div>
                     )}
